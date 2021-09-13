@@ -2,15 +2,16 @@
  * Created by richard.livingston on 18/02/2017.
  */
 'use strict';
-
-const EventEmitter = require('events')
-
+const mitt = require('mitt')
 
 module.exports = JSONView;
 
 
-class JSONView extends EventEmitter {
+class JSONView {
 	constructor (name_, value_){
+		const emitter = new mitt()
+		this.emit = emitter.emit.bind(emitter)
+
 		var self = this;
 
 		if(arguments.length < 2){
