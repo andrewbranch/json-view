@@ -1,6 +1,6 @@
 .jsonView{
     margin-left: 20px;
-    font-family: Consolas, "Lucida Console", Menlo, "dejavu sans mono", monospace;
+    font-family: "SF Mono", "Roboto Mono", "Fira Code", "Fira Mono", "Droid Sans Mono", "Source Code Pro", monospace;
     font-size: 16px;
     line-height: 16px;
     padding: 2px;
@@ -38,7 +38,7 @@
     color: rgb(28, 0, 207);
 }
 
-.jsonView>.value.string:not(.edit):before, .jsonView>.value.string:not(.edit):after{
+.jsonView>.value.string:before, .jsonView>.value.string:after{
     content: "\"";
 }
 
@@ -46,14 +46,13 @@
     color: rgb(196, 26, 22);
 }
 
-.jsonView>.name:hover, .jsonView>.value:hover{
-    background-color: rgba(56, 121, 217, 0.1);
-}
-
 .jsonView>.expand, .jsonView>.collapse{
     min-width: 20px;
     margin-left: -20px;
     cursor: pointer;
+}
+.jsonView > .expand:not([style]) ~ *:not(.children), .jsonView > .collapse ~ *:not(.children) {
+  cursor: pointer;
 }
 
 .jsonView>.expand:before{
@@ -62,64 +61,4 @@
 
 .jsonView>.collapse:before{
     content: '\25BC';
-}
-
-.jsonView>.edit{
-    padding: 0px 5px 0px 5px;
-    white-space: nowrap;
-    overflow: hidden;
-    background-color: transparent;
-}
-
-.jsonView>.edit br{
-    display: none;
-}
-
-.jsonView>.edit *{
-    display: inline;
-    white-space: nowrap;
-}
-
-.jsonView>.value.edit{
-    color: rgb(0, 0, 0);
-}
-
-.jsonView>.delete:before{
-    content: 'X';
-}
-
-.jsonView>.delete{
-    opacity: 0;
-    display: inline;
-    padding: 3px;
-    margin-left: 20px;
-    cursor: pointer;
-    color: rgb(150, 150, 150);
-}
-
-.jsonView>.delete:hover{
-    opacity: 1;
-    color: rgb(0, 0, 0);
-    background: rgb(220, 220, 220);
-}
-
-.jsonView>.insert:before{
-    content: '+';
-}
-
-.jsonView>.insert{
-    display: none;
-    color: rgb(150, 150, 150);
-    cursor: pointer;
-}
-
-.jsonView.expanded>.insert, .jsonView.expanded>.insert{
-    display: inline-block;
-    margin-left: 20px;
-    padding: 3px;
-}
-
-.jsonView>.insert:hover{
-    color: rgb(0, 0, 0);
-    background: rgb(220, 220, 220);
 }

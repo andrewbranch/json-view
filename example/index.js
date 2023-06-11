@@ -2,7 +2,8 @@
  * Created by r1ch4 on 02/10/2016.
  */
 
-var JSONView = require('json-view');
+import "../devtools.css";
+import JSONView from "../JSONView.js";
 
 var view = new JSONView('example', {
     hello : 'world',
@@ -13,10 +14,6 @@ var view = new JSONView('example', {
     d : 1,
     e : {nested : 'object'},
     f : [1,2,3]
-});
-
-view.on('change', function(key, oldValue, newValue){
-    console.log('change', key, oldValue, '=>', newValue);
 });
 
 view.expand(true);

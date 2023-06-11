@@ -1,28 +1,19 @@
+// @ts-check
+
 /**
  * Created by richard.livingston on 18/02/2017.
  */
-'use strict';
-const mitt = require('mitt')
 
-module.exports = JSONView;
-
-
-class JSONView {
+export default class JSONView {
+ /**
+  * @param {string} name_ 
+  * @param {any} value_ 
+  */
 	constructor (name_, value_){
-		const emitter = new mitt()
-		this.emit = emitter.emit.bind(emitter)
-
 		var self = this;
 
-		if(arguments.length < 2){
-			value_ = name_;
-			name_ = undefined;
-		}
-
 		var name, value, type,
-			domEventListeners = [], children = [], expanded = false,
-			edittingName = false, edittingValue = false,
-			nameEditable = true, valueEditable = true;
+			domEventListeners = [], children = [], expanded = false;
 
 		var dom = {
 			container : document.createElement('div'),
@@ -69,30 +60,6 @@ class JSONView {
 				enumerable : true
 			},
 
-			nameEditable : {
-				get : function(){
-					return nameEditable;
-				},
-
-				set : function(value){
-					nameEditable = !!value;
-				},
-
-				enumerable : true
-			},
-
-			valueEditable : {
-				get : function(){
-					return valueEditable;
-				},
-
-				set : function(value){
-					valueEditable = !!value;
-				},
-
-				enumerable : true
-			},
-
 			refresh : {
 				value : refresh,
 				enumerable : true
@@ -112,17 +79,6 @@ class JSONView {
 				value : destroy,
 				enumerable : true
 			},
-
-			editName : {
-				value : editField.bind(null, 'name'),
-				enumerable : true
-			},
-
-			editValue : {
-				value : editField.bind(null, 'value'),
-				enumerable : true
-			}
-
 		});
 
 
@@ -140,22 +96,8 @@ class JSONView {
 		dom.container.className = 'jsonView';
 
 		addDomEventListener(dom.collapseExpand, 'click', onCollapseExpandClick);
-		addDomEventListener(dom.value, 'click', expand.bind(null, false));
-		addDomEventListener(dom.name, 'click', expand.bind(null, false));
-
-		addDomEventListener(dom.name, 'dblclick', editField.bind(null, 'name'));
-		addDomEventListener(dom.name, 'blur', editFieldStop.bind(null, 'name'));
-		addDomEventListener(dom.name, 'keypress', editFieldKeyPressed.bind(null, 'name'));
-		addDomEventListener(dom.name, 'keydown', editFieldTabPressed.bind(null, 'name'));
-
-		addDomEventListener(dom.value, 'dblclick', editField.bind(null, 'value'));
-		addDomEventListener(dom.value, 'blur', editFieldStop.bind(null, 'value'));
-		addDomEventListener(dom.value, 'keypress', editFieldKeyPressed.bind(null, 'value'));
-		addDomEventListener(dom.value, 'keydown', editFieldTabPressed.bind(null, 'value'));
-		addDomEventListener(dom.value, 'keydown', numericValueKeyDown);
-
-		addDomEventListener(dom.insert, 'click', onInsertClick);
-		addDomEventListener(dom.delete, 'click', onDeleteClick);
+		addDomEventListener(dom.value, 'click', onCollapseExpandClick);
+		addDomEventListener(dom.name, 'click', onCollapseExpandClick);
 
 		setName(name_);
 		setValue(value_);
@@ -256,9 +198,7 @@ class JSONView {
 
 
 		function setName(newName){
-			var nameType = typeof newName,
-				oldName = name;
-
+			var nameType = typeof newName;
 			if(newName === name){
 				return;
 			}
@@ -269,13 +209,11 @@ class JSONView {
 
 			dom.name.innerText = newName;
 			name = newName;
-			self.emit('rename', self, oldName, newName);
 		}
 
 
 		function setValue(newValue){
-			var oldValue = value,
-				str;
+			var str;
 
 			type = getType(newValue);
 
@@ -305,22 +243,7 @@ class JSONView {
 
 			value = newValue;
 
-			if(type == 'array' || type == 'object'){
-				// Cannot edit objects as string because the formatting is too messy
-				// Would have to either pass as JSON and force user to wrap properties in quotes
-				// Or first JSON stringify the input before passing, this could allow users to reference globals
-
-				// Instead the user can modify individual properties, or just delete the object and start again
-				valueEditable = false;
-
-				if(type == 'array'){
-					// Obviously cannot modify array keys
-					nameEditable = false;
-				}
-			}
-
 			refresh();
-			self.emit('change', name, oldValue, newValue);
 		}
 
 
@@ -339,9 +262,6 @@ class JSONView {
 			}
 			else{
 				child = new JSONView(key, val);
-				child.once('rename', onChildRename);
-				child.on('delete', onChildDelete);
-				child.on('change', onChildChange);
 				children.push(child);
 			}
 
@@ -358,129 +278,6 @@ class JSONView {
 
 			child.destroy();
 			child.removeAllListeners();
-		}
-
-
-		function editField(field){
-			var editable = field == 'name' ? nameEditable : valueEditable,
-				element = dom[field];
-
-			if(!editable){
-				return;
-			}
-
-			if(field == 'value' && type == 'string'){
-				element.innerText = '"' + value + '"';
-			}
-
-			if(field == 'name'){
-				edittingName = true;
-			}
-
-			if(field == 'value'){
-				edittingValue = true;
-			}
-
-			element.classList.add('edit');
-			element.setAttribute('contenteditable', true);
-			element.focus();
-			document.execCommand('selectAll', false, null);
-		}
-
-
-		function editFieldStop(field){
-			var element = dom[field];
-			
-			if(field == 'name'){
-				if(!edittingName){
-					return;
-				}
-				edittingName = false;
-			}
-
-			if(field == 'value'){
-				if(!edittingValue){
-					return;
-				}
-				edittingValue = false;
-			}
-			
-			if(field == 'name'){
-				setName(element.innerText);
-			}
-			else{
-				try{
-					setValue(JSON.parse(element.innerText));
-				}
-				catch(err){
-					setValue(element.innerText);
-				}
-			}
-
-			element.classList.remove('edit');
-			element.removeAttribute('contenteditable');
-		}
-
-
-		function editFieldKeyPressed(field, e){
-			switch(e.key){
-				case 'Escape':
-				case 'Enter':
-					editFieldStop(field);
-					break;
-			}
-		}
-
-
-		function editFieldTabPressed(field, e){
-			if(e.key == 'Tab'){
-				editFieldStop(field);
-
-				if(field == 'name'){
-					e.preventDefault();
-					editField('value');
-				}
-				else{
-					editFieldStop(field);
-				}
-			}
-		}
-
-
-		function numericValueKeyDown(e){
-			var increment = 0, currentValue;
-
-			if(type != 'number'){
-				return;
-			}
-
-			switch(e.key){
-				case 'ArrowDown':
-				case 'Down':
-					increment = -1;
-					break;
-
-				case 'ArrowUp':
-				case 'Up':
-					increment = 1;
-					break;
-			}
-
-			if(e.shiftKey){
-				increment *= 10;
-			}
-
-			if(e.ctrlKey || e.metaKey){
-				increment /= 10;
-			}
-
-			if(increment){
-				currentValue = parseFloat(dom.value.innerText);
-
-				if(!isNaN(currentValue)){
-					setValue(Number((currentValue + increment).toFixed(10)));
-				}
-			}
 		}
 
 
@@ -508,68 +305,6 @@ class JSONView {
 			else{
 				expand();
 			}
-		}
-
-
-		function onInsertClick(){
-			var newName = type == 'array' ? value.length : undefined,
-				child = addChild(newName, null);
-
-			if(type == 'array'){
-				value.push(null);
-				child.editValue();
-			}
-			else{
-				child.editName();
-			}
-		}
-
-
-		function onDeleteClick(){
-			self.emit('delete', self);
-		}
-
-
-		function onChildRename(child, oldName, newName){
-			var allow = newName && type != 'array' && !(newName in value);
-
-			if(allow){
-				value[newName] = child.value;
-				delete value[oldName];
-			}
-			else if(oldName === undefined){
-				// A new node inserted via the UI
-				removeChild(child);
-			}
-			else{
-				// Cannot rename array keys, or duplicate object key names
-				child.name = oldName;
-			}
-
-			child.once('rename', onChildRename);
-		}
-
-
-		function onChildChange(keyPath, oldValue, newValue, recursed){
-			if(!recursed){
-				value[keyPath] = newValue;
-			}
-
-			self.emit('change', name + '.' + keyPath, oldValue, newValue, true);
-		}
-
-
-		function onChildDelete(child){
-			var key = child.name;
-
-			if(type == 'array'){
-				value.splice(key, 1);
-			}
-			else{
-				delete value[key];
-			}
-
-			refresh();
 		}
 
 

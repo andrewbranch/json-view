@@ -1,6 +1,7 @@
 {
-	"name": "json-view",
+	"name": "@andrwebranch/json-view",
 	"version": "0.4.1",
+	"type": "module",
 	"license": "MIT",
 	"files": [
 		"JSONView.js",
@@ -25,7 +26,10 @@
 		"edit",
 		"devtools"
 	],
-	"dependencies": {
-		"mitt": "^3.0.0"
-	}
+	"devDependencies": {
+		"vite": "^4.3.9"
+	},
+  "scripts": {
+    "start": "vite example"
+  }
 }
