@@ -5,6 +5,7 @@
  */
 
 export default class JSONView {
+
  /**
   * @param {string} name_ 
   * @param {any} value_ 
@@ -26,6 +27,7 @@ export default class JSONView {
 			insert : document.createElement('div')
 		};
 
+    this.dom = dom.container;
 
 		Object.defineProperties(self, {
 
@@ -277,7 +279,6 @@ export default class JSONView {
 			}
 
 			child.destroy();
-			child.removeAllListeners();
 		}
 
 
