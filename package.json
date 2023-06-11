@@ -1,16 +1,16 @@
 {
 	"name": "@andrewbranch/json-view",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"type": "module",
 	"license": "MIT",
 	"files": [
 		"JSONView.js",
-    "JSONView.d.ts",
+		"JSONView.d.ts",
 		"devtools.css",
 		"example"
 	],
 	"main": "JSONView.js",
-  "types": "JSONView.d.ts",
+	"types": "JSONView.d.ts",
 	"author": "Richard Livingston <richard.npm@logoapps.com>",
 	"repository": {
 		"type": "git",
@@ -19,7 +19,7 @@
 	"homepage": "https://richard-livingston.github.io/json-view/",
 	"publishConfig": {
 		"registry": "https://registry.npmjs.org/",
-    "access": "public"
+		"access": "public"
 	},
 	"keywords": [
 		"json",
