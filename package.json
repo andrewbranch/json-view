@@ -1,5 +1,5 @@
 {
-	"name": "@andrwebranch/json-view",
+	"name": "@andrewbranch/json-view",
 	"version": "1.0.0",
 	"type": "module",
 	"license": "MIT",
@@ -16,7 +16,8 @@
 	},
 	"homepage": "https://richard-livingston.github.io/json-view/",
 	"publishConfig": {
-		"registry": "https://registry.npmjs.org/"
+		"registry": "https://registry.npmjs.org/",
+    "access": "public"
 	},
 	"keywords": [
 		"json",
