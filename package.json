@@ -5,10 +5,12 @@
 	"license": "MIT",
 	"files": [
 		"JSONView.js",
+    "JSONView.d.ts",
 		"devtools.css",
 		"example"
 	],
 	"main": "JSONView.js",
+  "types": "JSONView.d.ts",
 	"author": "Richard Livingston <richard.npm@logoapps.com>",
 	"repository": {
 		"type": "git",
