@@ -1,6 +1,6 @@
 {
 	"name": "@andrwebranch/json-view",
-	"version": "0.4.1",
+	"version": "1.0.0",
 	"type": "module",
 	"license": "MIT",
 	"files": [
@@ -29,7 +29,7 @@
 	"devDependencies": {
 		"vite": "^4.3.9"
 	},
-  "scripts": {
-    "start": "vite example"
-  }
+	"scripts": {
+		"start": "vite example"
+	}
 }
